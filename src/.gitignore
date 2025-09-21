@@ -1,0 +1,15 @@
+# dependencias
+/node_modules
+/.pnp
+.pnp.js
+
+# producción
+/dist
+
+# cachés
+/.cache
+/.vite
+
+# sistema
+.DS_Store
+Thumbs.db

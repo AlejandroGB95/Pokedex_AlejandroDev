@@ -100,6 +100,7 @@ export default function PokedexApp() {
         evolutions,
         howToEvolve: species ? species.genera : null,
         speciesData: species,
+
       });
     } catch (err) {
       console.error(err);
