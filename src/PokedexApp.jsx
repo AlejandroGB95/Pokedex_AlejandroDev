@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 // PokedexApp.jsx
 // App en React con TailwindCSS + PokeAPI
-// Incluye lista con búsqueda, detalles con stats, tipos, debilidades y evoluciones (con condiciones).
+// Responsive: lista, búsqueda, cards, modal con stats, debilidades y evoluciones.
 
 export default function PokedexApp() {
   const PAGE_LIMIT = 48;
@@ -171,16 +171,19 @@ export default function PokedexApp() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
+    <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6">
       <div className="max-w-6xl mx-auto">
-        <header className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-extrabold">🎮 Pokedex (PokeAPI)</h1>
-          <div className="flex items-center gap-2">
+        {/* Header */}
+        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-center sm:text-left">
+            🎮 Pokedex (PokeAPI)
+          </h1>
+          <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Buscar por nombre o id..."
-              className="border px-3 py-2 rounded-lg shadow-sm text-black"
+              className="w-full sm:w-64 border px-3 py-2 rounded-lg shadow-sm text-black"
             />
             <button
               onClick={() => {
@@ -188,14 +191,16 @@ export default function PokedexApp() {
                 setOffset(0);
                 loadMore();
               }}
-              className="px-3 py-2 bg-sky-600 text-white rounded-lg"
+              className="px-3 py-2 bg-sky-600 text-white rounded-lg w-full sm:w-auto"
             >
               Reiniciar
             </button>
           </div>
         </header>
 
+        {/* Grid */}
         <main className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {/* Lista de pokemons */}
           <section className="col-span-1 md:col-span-2 lg:col-span-3">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {filteredPokemons().map((p) => (
@@ -207,7 +212,7 @@ export default function PokedexApp() {
                   <img
                     src={p.image}
                     alt={p.name}
-                    className="w-24 h-24 object-contain mb-2"
+                    className="w-20 h-20 sm:w-24 sm:h-24 object-contain mb-2"
                   />
                   <div className="text-sm font-semibold capitalize">
                     {p.name}
@@ -217,6 +222,7 @@ export default function PokedexApp() {
               ))}
             </div>
 
+            {/* Botón cargar más */}
             <div className="mt-6 flex items-center justify-center gap-3">
               {offset < (count || Infinity) && (
                 <button
@@ -230,34 +236,32 @@ export default function PokedexApp() {
             </div>
           </section>
 
-          <aside className="bg-gray-800 rounded-2xl p-4 shadow sticky top-6">
-            <h2 className="font-bold mb-2">Detalles rápidos</h2>
-            <p className="text-sm text-gray-300">
-              Haz click en un Pokémon para ver sus estadísticas, debilidades y
-              evolución.
+          {/* Aside */}
+          <aside className="bg-gray-800 rounded-2xl p-4 shadow sticky top-6 text-sm">
+            <h2 className="font-bold mb-2 text-base">Detalles rápidos</h2>
+            <p className="text-gray-300 mb-4">
+              Haz click en un Pokémon para ver sus estadísticas, debilidades y evolución.
             </p>
-
-            <div className="mt-4">
+            <div>
               <div className="text-xs text-gray-400">Pokémon cargados</div>
               <div className="text-lg font-semibold">
                 {pokemons.length}
                 {count ? ` / ${count}` : ""}
               </div>
             </div>
-
-            <div className="mt-4 text-sm text-gray-400">
-              Datos obtenidos de <strong>PokeAPI</strong>. Imágenes:
-              official-artwork.
+            <div className="mt-4 text-gray-400">
+              Datos de <strong>PokeAPI</strong>. Imágenes official-artwork.
             </div>
           </aside>
         </main>
 
+        {/* Modal detalles */}
         {selected && (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-            <div className="bg-gray-800 rounded-2xl shadow-xl max-w-4xl w-full p-6 relative text-white">
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+            <div className="bg-gray-800 rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 relative text-white">
               <button
                 onClick={() => setSelected(null)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-white"
+                className="absolute top-4 right-4 text-gray-400 hover:text-white text-xl"
               >
                 ✖
               </button>
@@ -266,17 +270,18 @@ export default function PokedexApp() {
                 <div>Cargando detalles...</div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Info básica */}
                   <div className="col-span-1 flex flex-col items-center">
                     <img
                       src={selected.image}
                       alt={selected.name}
-                      className="w-48 h-48 object-contain"
+                      className="w-40 h-40 sm:w-48 sm:h-48 object-contain"
                     />
                     <h3 className="capitalize text-2xl font-bold mt-2">
                       {selected.name}{" "}
                       <span className="text-gray-400">#{selected.id}</span>
                     </h3>
-                    <div className="mt-2 flex gap-2">
+                    <div className="mt-2 flex flex-wrap justify-center gap-2">
                       {selected.types.map((t) => (
                         <span
                           key={t}
@@ -288,7 +293,9 @@ export default function PokedexApp() {
                     </div>
                   </div>
 
+                  {/* Info detallada */}
                   <div className="col-span-2">
+                    {/* Stats */}
                     <section className="mb-4">
                       <h4 className="font-semibold">Estadísticas</h4>
                       <div className="grid grid-cols-2 gap-2 mt-2">
@@ -304,10 +311,9 @@ export default function PokedexApp() {
                       </div>
                     </section>
 
+                    {/* Debilidades */}
                     <section className="mb-4">
-                      <h4 className="font-semibold">
-                        Debilidades / multiplicadores
-                      </h4>
+                      <h4 className="font-semibold">Debilidades</h4>
                       {selected.weaknesses.length === 0 ? (
                         <div className="text-sm text-gray-400 mt-2">
                           No hay datos de debilidades.
@@ -327,6 +333,7 @@ export default function PokedexApp() {
                       )}
                     </section>
 
+                    {/* Evoluciones */}
                     <section className="mb-4">
                       <h4 className="font-semibold">Evoluciones</h4>
                       {selected.evolutions.length === 0 ? (
@@ -334,7 +341,7 @@ export default function PokedexApp() {
                           Este Pokémon no tiene cadena de evolución.
                         </div>
                       ) : (
-                        <div className="flex gap-4 items-center mt-2 flex-wrap">
+                        <div className="flex flex-wrap gap-4 items-center mt-2">
                           {selected.evolutions.map((e, i) => (
                             <div
                               key={e.id}
@@ -343,7 +350,7 @@ export default function PokedexApp() {
                               <img
                                 src={e.image}
                                 alt={e.name}
-                                className="w-20 h-20 object-contain"
+                                className="w-16 h-16 sm:w-20 sm:h-20 object-contain"
                               />
                               <div className="capitalize text-sm">{e.name}</div>
                               {e.details && (
@@ -355,7 +362,6 @@ export default function PokedexApp() {
                                     `Usa ${e.details.item?.name}`}
                                   {e.details.trigger?.name === "trade" &&
                                     "Intercambio"}
-                                  {/* puedes añadir más condiciones aquí */}
                                 </div>
                               )}
                               {i < selected.evolutions.length - 1 && (
@@ -367,6 +373,7 @@ export default function PokedexApp() {
                       )}
                     </section>
 
+                    {/* Datos especie */}
                     <section>
                       <h4 className="font-semibold">Datos de especie</h4>
                       <div className="text-sm text-gray-300 mt-2 max-h-40 overflow-auto">
@@ -387,10 +394,7 @@ export default function PokedexApp() {
                             </div>
                             <ul className="list-disc pl-5">
                               {selected.speciesData.genera.map((g, idx) => (
-                                <li
-                                  key={idx}
-                                  className="capitalize text-xs"
-                                >
+                                <li key={idx} className="capitalize text-xs">
                                   {g.genus} — {g.language.name}
                                 </li>
                               ))}
